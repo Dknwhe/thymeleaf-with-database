@@ -1,4 +1,4 @@
-package se.ecutb.thymeleaf_db_lecture;
+package se.ecutb.thymeleaf_db_lecture.data;
 
 import org.springframework.data.repository.CrudRepository;
 import se.ecutb.thymeleaf_db_lecture.entity.AppUser;
