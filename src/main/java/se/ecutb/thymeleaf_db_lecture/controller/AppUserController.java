@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import se.ecutb.thymeleaf_db_lecture.data.AppUserRepository;
 import se.ecutb.thymeleaf_db_lecture.dto.CreateAppUserForm;
@@ -49,9 +50,17 @@ public class AppUserController {
             return "user-form";
         }
 
-        appUserRepository.save(new AppUser(form.getFirstName(),form.getLastName(),form.getPassword(),form.getEmail(), LocalDate.now()));
-        return "index";
+        AppUser user = appUserRepository.save(new AppUser(form.getFirstName(),form.getLastName(),form.getPassword(),form.getEmail(), LocalDate.now()));
+        return "redirect:/users/"+user.getUserId();
 
+    }
+
+    //localhost:8080/users/1
+    @GetMapping("users/{id}")
+    public String getUserView(@PathVariable(name = "id") int id, Model model){
+        AppUser appUser = appUserRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        model.addAttribute("user", appUser);
+        return "user-view";
     }
 
 }
