@@ -1,14 +1,19 @@
 package se.ecutb.thymeleaf_db_lecture.entity;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
+@Entity
 public class AppUser {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int userId;
     private String firstName;
     private String lastName;
     private String password;
+    @Column(unique = true)
     private String email;
     private LocalDate regDate;
 
