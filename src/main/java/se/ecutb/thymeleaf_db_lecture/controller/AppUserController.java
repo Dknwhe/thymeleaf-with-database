@@ -50,7 +50,6 @@ public class AppUserController {
         }
 
         appUserRepository.save(new AppUser(form.getFirstName(),form.getLastName(),form.getPassword(),form.getEmail(), LocalDate.now()));
-
         return "index";
 
     }
