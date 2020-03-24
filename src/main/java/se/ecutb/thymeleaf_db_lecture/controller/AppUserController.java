@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import se.ecutb.thymeleaf_db_lecture.data.AppUserRepository;
 import se.ecutb.thymeleaf_db_lecture.dto.CreateAppUserForm;
+import se.ecutb.thymeleaf_db_lecture.dto.UpdateAppUserForm;
 import se.ecutb.thymeleaf_db_lecture.entity.AppUser;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Controller
 public class AppUserController {
@@ -61,6 +63,46 @@ public class AppUserController {
         AppUser appUser = appUserRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         model.addAttribute("user", appUser);
         return "user-view";
+    }
+
+    @GetMapping("users/{id}/update")
+    public String getUpdateForm(@PathVariable("id") int id, Model model){
+        UpdateAppUserForm appUserForm = new UpdateAppUserForm();
+        AppUser appUser = appUserRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        appUserForm.setEmail(appUser.getEmail());
+        appUserForm.setFirstName(appUser.getFirstName());
+        appUserForm.setLastName(appUser.getLastName());
+        appUserForm.setUserId(appUser.getUserId());
+        model.addAttribute("form", appUserForm);
+
+        return "update-form";
+    }
+
+    @PostMapping("users/{id}/update")
+    public String processUpdate(
+            @PathVariable("id") int id,
+            @Valid @ModelAttribute("form") UpdateAppUserForm form,
+            BindingResult result)
+    {
+        AppUser original = appUserRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+
+        Optional<AppUser> optional = appUserRepository.findByEmailIgnoreCase(form.getEmail());
+        if(optional.isPresent() && !form.getEmail().equalsIgnoreCase(original.getEmail())){
+            FieldError error = new FieldError("form", "email", "Email is already in use");
+            result.addError(error);
+        }
+
+        if(result.hasErrors()){
+            return "update-form";
+        }
+
+        original.setEmail(form.getEmail());
+        original.setFirstName(form.getFirstName());
+        original.setLastName(form.getLastName());
+
+        appUserRepository.save(original);
+
+        return "redirect:/users/"+original.getUserId();
     }
 
 }
