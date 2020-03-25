@@ -83,6 +83,14 @@ public class AppUser {
         this.regDate = regDate;
     }
 
+    public Set<AppRole> getRoleSet() {
+        return roleSet;
+    }
+
+    public void setRoleSet(Set<AppRole> roleSet) {
+        this.roleSet = roleSet;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
