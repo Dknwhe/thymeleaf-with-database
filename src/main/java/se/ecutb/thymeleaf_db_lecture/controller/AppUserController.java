@@ -106,5 +106,10 @@ public class AppUserController {
         return "redirect:/users/"+original.getUserId();
     }
 
+    @GetMapping("/login")
+    public String getLoginForm(){
+        return "login-form";
+    }
+
 }
 

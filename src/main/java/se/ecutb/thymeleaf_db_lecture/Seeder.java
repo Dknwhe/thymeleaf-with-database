@@ -3,8 +3,12 @@ package se.ecutb.thymeleaf_db_lecture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import se.ecutb.thymeleaf_db_lecture.data.AppRoleRepository;
 import se.ecutb.thymeleaf_db_lecture.data.AppUserRepository;
+import se.ecutb.thymeleaf_db_lecture.entity.AppRole;
 import se.ecutb.thymeleaf_db_lecture.entity.AppUser;
+import se.ecutb.thymeleaf_db_lecture.service.AppUserService;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -13,22 +17,23 @@ import java.util.List;
 @Component
 public class Seeder implements CommandLineRunner {
 
-    private AppUserRepository repository;
+    private AppUserService appUserService;
+    private AppRoleRepository appRoleRepository;
 
     @Autowired
-    public Seeder(AppUserRepository repository) {
-        this.repository = repository;
+    public Seeder(AppUserService appUserService, AppRoleRepository appRoleRepository) {
+        this.appUserService = appUserService;
+        this.appRoleRepository = appRoleRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
-        List<AppUser> appUserList = Arrays.asList(
-                new AppUser("Erik", "Svensson", "abcdefg10", "erik@gmail.com", LocalDate.now()),
-                new AppUser("Nisse", "Nilsson", "abcdefg10", "nisse@gmail.com", LocalDate.now()),
-                new AppUser("Simon", "Elbrink", "abcdefg10", "simon@gmail.com", LocalDate.now()),
-                new AppUser("Ulf", "Bengtsson", "abcdefg10", "uffe@gmail.com", LocalDate.now())
-        );
+        appRoleRepository.save(new AppRole("APP_USER"));
+        appRoleRepository.save(new AppRole("APP_ADMIN"));
 
-        repository.saveAll(appUserList);
+        appUserService.registerAppUser("Peter", "Sundberg", "peter@admin.com", "admin", LocalDate.now(), true);
+        appUserService.registerAppUser("Erik", "Svensson", "erik@user.com", "user", LocalDate.now(), false);
+
+
     }
 }
