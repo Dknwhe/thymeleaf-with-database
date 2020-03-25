@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
-public class AppUserServiceImpl implements AppUserService {
+public class AppUserServiceImpl implements AppUserService, UserDetailsService {
 
     private AppUserRepository appUserRepository; //Används generellt
     private AppRoleRepository appRoleRepository; //För att hämta roll(er)
@@ -36,7 +37,7 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Override
     @Transactional(readOnly = true)
-    public AppUserPrincipal loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<AppUser> userOptional = appUserRepository.findByEmailIgnoreCase(email);
         AppUser appUser = userOptional.orElseThrow(() -> new UsernameNotFoundException("User with email " + email + " could not be found"));
 
@@ -47,6 +48,11 @@ public class AppUserServiceImpl implements AppUserService {
             authorities.add(new SimpleGrantedAuthority(role.getRole()));
         }
         return new AppUserPrincipal(appUser, authorities);
+        /*
+        return new org.springframework.security.core.userdetails.User(
+                appUser.getEmail(), appUser.getPassword(), true, true, true, true, authorities
+        );
+        */
     }
 
     @Override

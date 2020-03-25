@@ -9,17 +9,16 @@ public class MySecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     //AppUser uppfylla krav. UserDetails (interface) Skapa Principal.
 
-    // Skapa en bean som implementerar UserDetailsService - viktig del när man loggar in
+    // Skapa en bean som implementerar UserDetailsService - viktig del när man loggar in - klar
 
     // Skapa en bean av en password krypterare - klar
 
-    //Deinera funktionalitet i MySecurityConfiguration - grundläggande
+    //Definera funktionalitet i MySecurityConfiguration - grundläggande
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                     .antMatchers("/**").permitAll()
-
                 .and()
                     .formLogin()
                         .usernameParameter("email")
