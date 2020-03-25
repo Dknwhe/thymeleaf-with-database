@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <script defer th:src="@{/webjars/jquery/jquery.min.js}"></script>
     <script defer th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
@@ -57,6 +58,11 @@
                         <span class="form-error" th:text="${error}"></span>
                     </li>
                 </ul>
+            </div>
+
+            <div sec:authorize="hasAuthority('ADMIN')">
+                <label>Create admin</label>
+                <input type="checkbox" value="true" th:field="*{admin}">
             </div>
             <button class="btn btn-primary" type="submit">Send</button>
         </form>

@@ -18,12 +18,18 @@ public class MySecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
+                    .antMatchers("/admin/**").hasAuthority("ADMIN")
+                    .antMatchers("/users/**").permitAll()
                     .antMatchers("/**").permitAll()
                 .and()
                     .formLogin()
                         .usernameParameter("email")
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
-                        .permitAll();
+                        .permitAll()
+                .and()
+                    .logout()
+                    .logoutUrl("/logout")
+                    .logoutSuccessUrl("/login?logout");
     }
 }

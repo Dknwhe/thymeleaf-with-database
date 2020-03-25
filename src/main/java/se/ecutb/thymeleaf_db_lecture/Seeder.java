@@ -28,8 +28,8 @@ public class Seeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        appRoleRepository.save(new AppRole("APP_USER"));
-        appRoleRepository.save(new AppRole("APP_ADMIN"));
+        appRoleRepository.save(new AppRole("USER"));
+        appRoleRepository.save(new AppRole("ADMIN"));
 
         appUserService.registerAppUser("Peter", "Sundberg", "peter@admin.com", "admin", LocalDate.now(), true);
         appUserService.registerAppUser("Erik", "Svensson", "erik@user.com", "user", LocalDate.now(), false);

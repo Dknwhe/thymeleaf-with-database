@@ -45,7 +45,9 @@ public class AppUserServiceImpl implements AppUserService, UserDetailsService {
         //I SimpleGrantedAuthority role = "ROLE_APP_USER"
         Collection<GrantedAuthority> authorities = new HashSet<>();
         for(AppRole role : appUser.getRoleSet()){
-            authorities.add(new SimpleGrantedAuthority(role.getRole()));
+            SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.getRole());
+            System.err.println(authority.getAuthority());
+            authorities.add(authority);
         }
         return new AppUserPrincipal(appUser, authorities);
         /*
@@ -69,11 +71,11 @@ public class AppUserServiceImpl implements AppUserService, UserDetailsService {
         Set<AppRole> roles = new HashSet<>();
 
         if(isAdmin){
-            AppRole admin = appRoleRepository.findByRole("app_admin").orElseThrow(IllegalArgumentException::new);
+            AppRole admin = appRoleRepository.findByRole("admin").orElseThrow(IllegalArgumentException::new);
             roles.add(admin);
         }
 
-        AppRole userRole = appRoleRepository.findByRole("app_user").orElseThrow(IllegalArgumentException::new);
+        AppRole userRole = appRoleRepository.findByRole("user").orElseThrow(IllegalArgumentException::new);
         roles.add(userRole);
 
         newUser.setRoleSet(roles);

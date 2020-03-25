@@ -37,7 +37,7 @@ public class AppUserController {
     }
 
     @PostMapping("users/register/process")
-    public String formProcess(@Valid @ModelAttribute("form") CreateAppUserForm form, @RequestParam(required = false) Boolean isAdmin, BindingResult bindingResult){
+    public String formProcess(@Valid @ModelAttribute("form") CreateAppUserForm form, BindingResult bindingResult){
 
         if(appUserRepository.findByEmailIgnoreCase(form.getEmail()).isPresent()){
             FieldError error = new FieldError("form", "email", "Email is already in use");
@@ -53,9 +53,12 @@ public class AppUserController {
             return "user-form";
         }
 
-        AppUser user = appUserService.registerAppUser(form.getFirstName(),form.getLastName(),form.getEmail(),form.getPassword(), LocalDate.now(), isAdmin);
-        return "redirect:/users/"+user.getUserId();
-
+        AppUser user = appUserService.registerAppUser(form.getFirstName(),form.getLastName(),form.getEmail(),form.getPassword(), LocalDate.now(), form.isAdmin());
+        if(form.isAdmin()){
+            return "redirect:/users/"+user.getUserId();
+        }else {
+            return "redirect:/login";
+        }
     }
 
     //localhost:8080/users/1

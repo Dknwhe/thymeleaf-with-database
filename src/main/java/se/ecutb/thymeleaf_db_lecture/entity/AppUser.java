@@ -19,8 +19,8 @@ public class AppUser {
     private LocalDate regDate;
 
     @ManyToMany(
-            cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH},
-            fetch = FetchType.LAZY
+            cascade = {CascadeType.MERGE},
+            fetch = FetchType.EAGER
     )
     @JoinTable(
             name = "app_user_app_role",
