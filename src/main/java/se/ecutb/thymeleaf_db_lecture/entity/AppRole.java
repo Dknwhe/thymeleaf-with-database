@@ -1,9 +1,6 @@
 package se.ecutb.thymeleaf_db_lecture.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
@@ -11,6 +8,7 @@ public class AppRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int roleId;
+    @Column(unique = true)
     private String role;
 
     public AppRole(String role) {

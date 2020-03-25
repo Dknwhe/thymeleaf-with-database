@@ -5,14 +5,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import se.ecutb.thymeleaf_db_lecture.data.AppUserRepository;
 import se.ecutb.thymeleaf_db_lecture.dto.CreateAppUserForm;
 import se.ecutb.thymeleaf_db_lecture.dto.UpdateAppUserForm;
 import se.ecutb.thymeleaf_db_lecture.entity.AppUser;
+import se.ecutb.thymeleaf_db_lecture.service.AppUserService;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -22,11 +20,14 @@ import java.util.Optional;
 public class AppUserController {
 
     private AppUserRepository appUserRepository;
+    private AppUserService appUserService;
 
     @Autowired
-    public AppUserController(AppUserRepository appUserRepository) {
+    public AppUserController(AppUserRepository appUserRepository, AppUserService appUserService) {
         this.appUserRepository = appUserRepository;
+        this.appUserService = appUserService;
     }
+
     //                         domännamnet    / resurs på domän
     // /users/register/form == localhost:8080/users/register/form
     @GetMapping("users/register/form")
@@ -36,7 +37,7 @@ public class AppUserController {
     }
 
     @PostMapping("users/register/process")
-    public String formProcess(@Valid @ModelAttribute("form") CreateAppUserForm form, BindingResult bindingResult){
+    public String formProcess(@Valid @ModelAttribute("form") CreateAppUserForm form, @RequestParam(required = false) Boolean isAdmin, BindingResult bindingResult){
 
         if(appUserRepository.findByEmailIgnoreCase(form.getEmail()).isPresent()){
             FieldError error = new FieldError("form", "email", "Email is already in use");
@@ -52,7 +53,7 @@ public class AppUserController {
             return "user-form";
         }
 
-        AppUser user = appUserRepository.save(new AppUser(form.getFirstName(),form.getLastName(),form.getPassword(),form.getEmail(), LocalDate.now()));
+        AppUser user = appUserService.registerAppUser(form.getFirstName(),form.getLastName(),form.getEmail(),form.getPassword(), LocalDate.now(), isAdmin);
         return "redirect:/users/"+user.getUserId();
 
     }
