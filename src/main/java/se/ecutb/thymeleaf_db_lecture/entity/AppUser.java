@@ -3,6 +3,7 @@ package se.ecutb.thymeleaf_db_lecture.entity;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class AppUser {
@@ -16,6 +17,17 @@ public class AppUser {
     @Column(unique = true)
     private String email;
     private LocalDate regDate;
+
+    @ManyToMany(
+            cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH},
+            fetch = FetchType.LAZY
+    )
+    @JoinTable(
+            name = "app_user_app_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<AppRole> roleSet;
 
     public AppUser(String firstName, String lastName, String password, String email, LocalDate regDate) {
         this.firstName = firstName;
